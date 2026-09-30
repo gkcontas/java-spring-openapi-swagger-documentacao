@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: openapi-documentation
+  autoconfigure:
+    # Without this, Spring Boot sees no UserDetailsService, creates an in-memory one and
+    # logs a generated password at every startup — a default user that this API never
+    # consults, since authentication here is the static bearer token below.
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+
+springdoc:
+  api-docs:
+    # The default is /v3/api-docs. Naming it explicitly matters because the path ends up
+    # in client generators, CI pipelines and documentation portals — it is part of the
+    # contract as much as the endpoints are.
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    # Groups appear in a dropdown; without this the UI opens on whichever came first.
+    display-request-duration: true
+    operations-sorter: method
+    tags-sorter: alpha
+  # Alphabetical ordering of properties in generated schemas. Without it the order follows
+  # reflection, which is not stable across JVM versions — and an unstable spec makes every
+  # contract diff noise.
+  writer-with-order-by-keys: true
+
+app:
+  admin:
+    # Static bearer token, on purpose. Issuing and validating JWTs is the subject of two
+    # other projects in this portfolio; this one is about *documenting* a protected API,
+    # and a real auth stack here would be noise around the thing being demonstrated.
+    token: "demo-admin-token"
+
+server:
+  error:
+    include-message: always
